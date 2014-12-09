@@ -57,11 +57,11 @@ def find_closest_idx(toy_list, target):
         #print 'Toy {0} - {1} - {2} {3}<>{4}'.format(start, i, end,toy_list[i].duration, target)
         if (i == start) or (i == end):
             return i
-        if (toy_list[i].duration <= target) and (toy_list[i-1].duration > target):
+        if (toy_list[i].duration < target) and (toy_list[i-1].duration >= target):
             return i
         if (toy_list[i].duration > target):
             end = i
-        if (toy_list[i].duration <= target):
+        else:
             start = i
 
 def solution_firstAvailableElf(toy_file, soln_file, myelves):
