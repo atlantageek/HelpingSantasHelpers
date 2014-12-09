@@ -47,6 +47,14 @@ def assign_elf_to_toy(input_time, current_elf, current_toy, hrs):
     else:
         return hrs.apply_resting_period(start_time + duration, unsanctioned), duration
 
+def find_closest_idx(toy_list, target):
+    i = 0
+    while (toy_list[i].duration < target) and (i < len(toy_list)):
+        i+=1
+    if i == 0:
+        return 0
+    else:
+        return i - 1
 
 def solution_firstAvailableElf(toy_file, soln_file, myelves):
     """ Creates a simple solution where the next available elf is assigned a toy. Elves do not start
@@ -82,8 +90,11 @@ def solution_firstAvailableElf(toy_file, soln_file, myelves):
                 current_toy = sorted_toy_list.pop()
                 print 'Elf {0} eff {1} toy {2} duration {3} BIG TOY---------------------------------'.format(current_elf.id, current_elf.rating, current_toy.id, current_toy.duration)
             else:
-                current_toy = sorted_toy_list.pop(0)
-                if len(sorted_toy_list) % 1000 == 0:
+                val = hrs.get_sanctioned_time_left(elf_available_time)
+                print 'hrs {0} '.format(val)
+                current_toy_idx = find_closest_idx(sorted_toy_list, current_elf.rating * val)
+                current_toy = sorted_toy_list.pop(current_toy_idx)
+                if len(sorted_toy_list) % 100 == 0:
                     print 'Elf {0} eff {1} toy {2} duration {3} SMALL TOY {4}> {5}'.format(current_elf.id, current_elf.rating, current_toy.id, current_toy.duration, len(sorted_toy_list), len(sorted_toy_list))
                 
             # get next available elf

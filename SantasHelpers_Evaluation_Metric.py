@@ -105,10 +105,10 @@ def score_submission(sub_file, myToys, hrs, NUM_ELVES):
     if len(complete_toys) != len(myToys):
         print "\n ** Not all toys are complete. Exiting."
         exit(-1)
-    if max(complete_toys) != NUM_TOYS:
-        print "\n ** max ToyId != NUM_TOYS."
-        print "\n   max(complete_toys) = {0} versus NUM_TOYS = {1}".format(max(complete_toys), NUM_TOYS)
-        exit(-1)
+    #if max(complete_toys) != NUM_TOYS:
+        #print "\n ** max ToyId != NUM_TOYS."
+        #print "\n   max(complete_toys) = {0} versus NUM_TOYS = {1}".format(max(complete_toys), NUM_TOYS)
+        #exit(-1)
     else:
         score = last_minute * math.log(1.0 + len(myElves))
         print '\nSuccess!'
@@ -123,8 +123,8 @@ if __name__ == '__main__':
 
     start = time.time()
 
-    NUM_TOYS = 10000000
-    NUM_ELVES = 900
+    NUM_TOYS = 99999#10000000
+    NUM_ELVES = 9#00
 
     toy_file = os.path.join(os.getcwd(), 'toys_rev2.csv')
     myToys = read_toys(toy_file, NUM_TOYS)
