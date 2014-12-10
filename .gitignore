@@ -1,1 +1,2 @@
-toys_rev2.csv
+*.csv
+*.pyc
