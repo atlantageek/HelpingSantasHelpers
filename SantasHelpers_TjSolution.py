@@ -1,10 +1,11 @@
-""" Simple solution to the Santa 2014 Kaggle competition evaluation metric. 
+""" Simple solution to the Santa 2014 Kaggle competition evaluation metric.
 This solution takes each toy in turn (in chronological order) and assigns the next
 available elf to it. """
 __author__ = 'Tommie Jones'
 __date__ = 'Dec. 7, 2014'
 
 import os
+import gc
 import csv
 import math
 import heapq
@@ -88,10 +89,12 @@ def solution_firstAvailableElf(toy_file, soln_file, myelves):
         for row in toysfile:
             current_toy = Toy(row[0], row[1], row[2])
             toy_list.append(current_toy)
-        #sorted_toy_list = sorted(toy_list,key=attrgetter('duration'))
-        sorted_toy_list = sorted(toy_list,key = lambda e: e.duration)
 
-        print 'All is sorted:'
+    sorted_toy_list = sorted(toy_list,key = lambda e: e.duration)
+    toy_list = None
+    gc.collect()
+
+    print 'All is sorted:'
 
     with open(soln_file, 'wb') as w:
         wcsv = csv.writer(w)
@@ -108,7 +111,7 @@ def solution_firstAvailableElf(toy_file, soln_file, myelves):
                 current_toy = sorted_toy_list.pop(current_toy_idx)
                 if len(sorted_toy_list) % 10 == 0:
                     print 'Elf {0} eff {1} toy {2} duration {3} SMALL TOY {4}> {5}'.format(current_elf.id, current_elf.rating, current_toy.id, current_toy.duration, len(sorted_toy_list), len(sorted_toy_list))
-                
+
             # get next available elf
 
             work_start_time = elf_available_time
