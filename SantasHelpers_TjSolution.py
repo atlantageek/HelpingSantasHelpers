@@ -1,4 +1,4 @@
-""" Simple solution to the Santa 2014 Kaggle competition evaluation metric. 
+""" Simple solution to the Santa 2014 Kaggle competition evaluation metric.
 This solution takes each toy in turn (in chronological order) and assigns the next
 available elf to it. """
 __author__ = 'Tommie Jones'
@@ -104,11 +104,11 @@ def solution_firstAvailableElf(toy_file, soln_file, myelves):
                 loop_count = loop_count + 1
             else:
                 val = hrs.get_sanctioned_time_left(elf_available_time)
-                current_toy_idx = find_closest_idx(sorted_toy_list, current_elf.rating * (val*1.15))
+                current_toy_idx = find_closest_idx(sorted_toy_list, current_elf.rating * (val*1.075))
                 current_toy = sorted_toy_list.pop(current_toy_idx)
                 if len(sorted_toy_list) % 10 == 0:
                     print 'Elf {0} eff {1} toy {2} duration {3} SMALL TOY {4}> {5}'.format(current_elf.id, current_elf.rating, current_toy.id, current_toy.duration, len(sorted_toy_list), len(sorted_toy_list))
-                
+
             # get next available elf
 
             work_start_time = elf_available_time
