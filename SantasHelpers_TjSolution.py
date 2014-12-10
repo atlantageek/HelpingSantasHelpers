@@ -76,6 +76,7 @@ def solution_firstAvailableElf(toy_file, soln_file, myelves):
     ref_time = datetime.datetime(2014, 1, 1, 0, 0)
     row_count = 0
     toy_list = []
+    loop_count = 0
 
     #Build list of toys
     with open(toy_file, 'rb') as f:
@@ -97,9 +98,10 @@ def solution_firstAvailableElf(toy_file, soln_file, myelves):
             if current_elf.rating > 3.9:
                 current_toy = sorted_toy_list.pop()
                 print 'Elf {0} eff {1} toy {2} duration {3} BIG TOY---------------------------------'.format(current_elf.id, current_elf.rating, current_toy.id, current_toy.duration)
+                loop_count = loop_count + 1
             else:
                 val = hrs.get_sanctioned_time_left(elf_available_time)
-                current_toy_idx = find_closest_idx(sorted_toy_list, current_elf.rating * val)
+                current_toy_idx = find_closest_idx(sorted_toy_list, current_elf.rating * val * 1.15)
                 current_toy = sorted_toy_list.pop(current_toy_idx)
                 if len(sorted_toy_list) % 10 == 0:
                     print 'Elf {0} eff {1} toy {2} duration {3} SMALL TOY {4}> {5}'.format(current_elf.id, current_elf.rating, current_toy.id, current_toy.duration, len(sorted_toy_list), len(sorted_toy_list))
@@ -125,6 +127,7 @@ def solution_firstAvailableElf(toy_file, soln_file, myelves):
             tt = ref_time + datetime.timedelta(seconds=60*work_start_time)
             time_string = " ".join([str(tt.year), str(tt.month), str(tt.day), str(tt.hour), str(tt.minute)])
             wcsv.writerow([current_toy.id, current_elf.id, time_string, work_duration])
+    print 'loop_count = {0}'.format(loop_count)
 
 
 # ======================================================================= #
