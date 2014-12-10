@@ -51,11 +51,14 @@ def find_closest_idx(toy_list, target):
     start = 0
     end = len(toy_list)
     i = 0
+    if (toy_list[0].duration  > target):
+        print 'Bottomed Out'
+        return len(toy_list) - 1
     while True:
         i = ( (end - start) / 2 ) + start
-        
-        #print 'Toy {0} - {1} - {2} {3}<>{4}'.format(start, i, end,toy_list[i].duration, target)
-        if (i == start) or (i == end):
+        if (i == start):
+            return i
+        if (i == end):
             return i
         if (toy_list[i].duration < target) and (toy_list[i-1].duration >= target):
             return i
@@ -101,7 +104,7 @@ def solution_firstAvailableElf(toy_file, soln_file, myelves):
                 loop_count = loop_count + 1
             else:
                 val = hrs.get_sanctioned_time_left(elf_available_time)
-                current_toy_idx = find_closest_idx(sorted_toy_list, current_elf.rating * val * 1.15)
+                current_toy_idx = find_closest_idx(sorted_toy_list, current_elf.rating * (val*1.15))
                 current_toy = sorted_toy_list.pop(current_toy_idx)
                 if len(sorted_toy_list) % 10 == 0:
                     print 'Elf {0} eff {1} toy {2} duration {3} SMALL TOY {4}> {5}'.format(current_elf.id, current_elf.rating, current_toy.id, current_toy.duration, len(sorted_toy_list), len(sorted_toy_list))
