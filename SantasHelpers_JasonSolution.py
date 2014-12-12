@@ -5,6 +5,8 @@ __author__ = 'Tommie Jones'
 __date__ = 'Dec. 7, 2014'
 
 import os
+import sys
+import gc
 import csv
 import math
 import heapq
@@ -67,44 +69,6 @@ def find_closest_idx(toy_list, target):
         else:
             start = i
 
-def build_toy_list(toy_file):
-    def _get_range(d):
-        if d < 10:
-            return [0, 10]
-        elif d < 60:
-            return [10, 60]
-        elif d < 300:
-            return [60, 300]
-        elif d < 600:
-            return [300, 600]
-        else:
-            return [600, 1000000]
-
-    ranges = [[0, 10], [10, 60], [60, 300], [300, 600], [600, 1000000]]
-    toy_list = {}
-
-    for r in ranges:
-        toy_list[r] = []
-
-    with open(toy_file, 'rb') as f:
-        toysfile = csv.reader(f)
-        toysfile.next()  # header row
-        for row in toysfile:
-            current_toy = Toy(row[0], row[1], row[2])
-            duration = int(row[2])
-            toy_list[_get_range(duration)].append(current_toy)
-
-    sorted_toy_list = {}
-
-    for r in ranges:
-        sorted_toy_list[r] = sorted(toy_list[r], key = lambda e: e.duration)
-
-    toy_list = None
-    gc.collect()
-
-    return sorted_toy_list
-
-
 def solution_firstAvailableElf(toy_file, soln_file, myelves):
     """ Creates a simple solution where the next available elf is assigned a toy. Elves do not start
     work outside of sanctioned hours.
@@ -116,10 +80,22 @@ def solution_firstAvailableElf(toy_file, soln_file, myelves):
     hrs = Hours()
     ref_time = datetime.datetime(2014, 1, 1, 0, 0)
     row_count = 0
+    toy_list = []
     loop_count = 0
 
-    # Build list of toys
-    sorted_toy_list = build_toy_list(toy_file)
+    #Build list of toys
+    with open(toy_file, 'rb') as f:
+        toysfile = csv.reader(f)
+        toysfile.next()  # header row
+        for row in toysfile:
+            current_toy = Toy(row[0], row[1], row[2])
+            toy_list.append(current_toy)
+
+    sorted_toy_list = sorted(toy_list,key = lambda e: e.duration)
+    toy_list = None
+    gc.collect()
+
+    print 'All is sorted:'
 
     with open(soln_file, 'wb') as w:
         wcsv = csv.writer(w)
@@ -168,10 +144,10 @@ if __name__ == '__main__':
 
     start = time.time()
 
-    NUM_ELVES = 900
+    NUM_ELVES = int(sys.argv[2])
 
-    toy_file = os.path.join(os.getcwd(), 'toys_rev2.csv')
-    soln_file = os.path.join(os.getcwd(), 'TJ1Submission_rev2.csv')
+    toy_file = os.path.join(os.getcwd(), 'toys_sample1.csv')
+    soln_file = os.path.join(os.getcwd(), sys.argv[1])
 
     myelves = create_elves(NUM_ELVES)
     solution_firstAvailableElf(toy_file, soln_file, myelves)
