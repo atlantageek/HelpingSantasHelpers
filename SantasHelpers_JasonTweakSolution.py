@@ -55,7 +55,6 @@ def find_closest_idx(toy_list, target):
     end = len(toy_list)
     i = 0
     if (toy_list[0].duration  > target):
-        print 'Bottomed Out'
         return len(toy_list) - 1
     while True:
         i = ( (end - start) / 2 ) + start
@@ -82,7 +81,6 @@ def solution_firstAvailableElf(toy_file, soln_file):
     ref_time = datetime.datetime(2014, 1, 1, 0, 0)
     row_count = 0
     toy_list = []
-    loop_count = 0
 
     my_elves = create_elves(NUM_ELVES)
 
@@ -94,8 +92,15 @@ def solution_firstAvailableElf(toy_file, soln_file):
             current_toy = Toy(row[0], row[1], row[2])
             toy_list.append(current_toy)
 
-    sorted_toy_list = sorted(toy_list, key = lambda e: e.duration)
+    big_toys = sorted([x for x in toy_list if x.duration > 600], key = lambda e: -e.duration)
+    small_toys = sorted([x for x in toy_list if x.duration <= 600], key = lambda e: e.duration)
+
     toy_list = None
+    gc.collect()
+
+    sorted_toy_list = big_toys + small_toys
+
+    big_toys = small_toys = None
     gc.collect()
 
     with open(soln_file, 'wb') as w:
@@ -103,16 +108,15 @@ def solution_firstAvailableElf(toy_file, soln_file):
         wcsv.writerow(['ToyId', 'ElfId', 'StartTime', 'Duration'])
         while len(sorted_toy_list) > 0:
             elf_available_time, current_elf = heapq.heappop(my_elves)
-            if current_elf.rating > 3.5:
+            if current_elf.rating > 3:
                 current_toy = sorted_toy_list.pop()
-                print 'Elf {0} eff {1} toy {2} duration {3} BIG TOY---------------------------------'.format(current_elf.id, current_elf.rating, current_toy.id, current_toy.duration)
-                loop_count = loop_count + 1
             else:
                 val = hrs.get_sanctioned_time_left(elf_available_time)
                 current_toy_idx = find_closest_idx(sorted_toy_list, current_elf.rating * (val*1.025))
                 current_toy = sorted_toy_list.pop(current_toy_idx)
-                if len(sorted_toy_list) % 100 == 0:
-                    print 'Elf {0} eff {1} toy {2} duration {3} SMALL TOY {4}> {5}'.format(current_elf.id, current_elf.rating, current_toy.id, current_toy.duration, len(sorted_toy_list), len(sorted_toy_list))
+
+            if len(sorted_toy_list) % 1000 == 0:
+                print "[Elf %s @ %0.2f] => toy %s @ %s -- %0.2f%% done" % (current_elf.id, current_elf.rating, current_toy.id, current_toy.duration, len(sorted_toy_list) / 10000.0)
 
             # get next available elf
 
@@ -134,8 +138,6 @@ def solution_firstAvailableElf(toy_file, soln_file):
             tt = ref_time + datetime.timedelta(seconds=60*work_start_time)
             time_string = " ".join([str(tt.year), str(tt.month), str(tt.day), str(tt.hour), str(tt.minute)])
             wcsv.writerow([current_toy.id, current_elf.id, time_string, work_duration])
-
-    print 'loop_count = {0}'.format(loop_count)
 
 
 # ======================================================================= #
