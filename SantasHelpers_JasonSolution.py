@@ -53,9 +53,9 @@ def find_closest_idx(toy_list, target):
     start = 0
     end = len(toy_list)
     i = 0
-    if (toy_list[0].duration  > target):
-        print 'Bottomed Out'
-        return len(toy_list) - 1
+    #if (toy_list[0].duration  > target):
+    #    print 'Bottomed Out'
+    #    return len(toy_list) - 1
     while True:
         i = ( (end - start) / 2 ) + start
         if (i == start):
@@ -69,7 +69,14 @@ def find_closest_idx(toy_list, target):
         else:
             start = i
 
-def solution_firstAvailableElf(toy_file, soln_file, myelves):
+#def center_of_mass(toy_list):
+#    big_idx = find_closest_idx(toy_list,2500)
+#    small_idx = find_closest_idx(toy_list,600)
+#    small_wgt_sum = reduce(lambda x,y: x + y.duration)
+#    toy_len = len(toy_list)
+
+
+def solution_firstAvailableElf(toy_file, soln_file, myelves, threshold, over_factor):
     """ Creates a simple solution where the next available elf is assigned a toy. Elves do not start
     work outside of sanctioned hours.
     :param toy_file: filename for toys file (input)
@@ -95,6 +102,7 @@ def solution_firstAvailableElf(toy_file, soln_file, myelves):
     toy_list = None
     gc.collect()
 
+
     print 'All is sorted:'
 
     with open(soln_file, 'wb') as w:
@@ -102,13 +110,14 @@ def solution_firstAvailableElf(toy_file, soln_file, myelves):
         wcsv.writerow(['ToyId', 'ElfId', 'StartTime', 'Duration'])
         while len(sorted_toy_list) > 0:
             elf_available_time, current_elf = heapq.heappop(myelves)
-            if current_elf.rating > 3.9:
-                current_toy = sorted_toy_list.pop()
-                print 'Elf {0} eff {1} toy {2} duration {3} BIG TOY---------------------------------'.format(current_elf.id, current_elf.rating, current_toy.id, current_toy.duration)
+            if current_elf.rating >= threshold:
+                idx = find_closest_idx(sorted_toy_list, 3000)
+                current_toy = sorted_toy_list.pop(idx + 1)
+                print 'Elf {0} eff {1} toy {2} duration {3} BIG TOY-------------{4}---{5}-----------'.format(current_elf.id, current_elf.rating, current_toy.id, current_toy.duration, threshold, idx)
                 loop_count = loop_count + 1
             else:
                 val = hrs.get_sanctioned_time_left(elf_available_time)
-                current_toy_idx = find_closest_idx(sorted_toy_list, current_elf.rating * (val*1.15))
+                current_toy_idx = find_closest_idx(sorted_toy_list, current_elf.rating * (val*over_factor))
                 current_toy = sorted_toy_list.pop(current_toy_idx)
                 if len(sorted_toy_list) % 10 == 0:
                     print 'Elf {0} eff {1} toy {2} duration {3} SMALL TOY {4}> {5}'.format(current_elf.id, current_elf.rating, current_toy.id, current_toy.duration, len(sorted_toy_list), len(sorted_toy_list))
@@ -135,6 +144,7 @@ def solution_firstAvailableElf(toy_file, soln_file, myelves):
             time_string = " ".join([str(tt.year), str(tt.month), str(tt.day), str(tt.hour), str(tt.minute)])
             wcsv.writerow([current_toy.id, current_elf.id, time_string, work_duration])
     print 'loop_count = {0}'.format(loop_count)
+    return work_start_time
 
 
 # ======================================================================= #
@@ -144,12 +154,21 @@ if __name__ == '__main__':
 
     start = time.time()
 
-    NUM_ELVES = int(sys.argv[2])
+    NUM_ELVES = 9
 
     toy_file = os.path.join(os.getcwd(), 'toys_sample1.csv')
-    soln_file = os.path.join(os.getcwd(), sys.argv[1])
+    dataset = os.path.join(os.getcwd(), 'result.csv')
 
-    myelves = create_elves(NUM_ELVES)
-    solution_firstAvailableElf(toy_file, soln_file, myelves)
+    with open(dataset, 'wb') as w:
+        wcsv = csv.writer(w)
+        wcsv.writerow(['Threshold', 'Over Factor', 'Last Start Time'])
+        threshold_list = [0.3, 0.4, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0]
+        over_list = [1.0, 1.02, 1.05, 1.075, 1.10, 1.15]
+        for threshold in threshold_list:
+            for over_factor in over_list:
+                soln_file = os.path.join(os.getcwd(), 'p' + str(threshold) + '_' + str(over_factor) + '.csv')
+                myelves = create_elves(NUM_ELVES)
+                start_time = solution_firstAvailableElf(toy_file, soln_file, myelves, threshold, over_factor)
+                wcsv.writerow([thresh, over_factor, start_time])
 
     print 'total runtime = {0}'.format(time.time() - start)
