@@ -160,8 +160,8 @@ if __name__ == '__main__':
     dataset = os.path.join(os.getcwd(), 'result.csv')
 
     with open(dataset, 'wb') as w:
-        wcsv = csv.writer(w)
-        wcsv.writerow(['Threshold', 'Over Factor', 'Last Start Time'])
+        wacsv = csv.writer(w)
+        wacsv.writerow(['Threshold', 'Over Factor', 'Last Start Time'])
         threshold_list = [0.3, 0.4, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0]
         over_list = [1.0, 1.02, 1.05, 1.075, 1.10, 1.15]
         for threshold in threshold_list:
@@ -169,6 +169,6 @@ if __name__ == '__main__':
                 soln_file = os.path.join(os.getcwd(), 'p' + str(threshold) + '_' + str(over_factor) + '.csv')
                 myelves = create_elves(NUM_ELVES)
                 start_time = solution_firstAvailableElf(toy_file, soln_file, myelves, threshold, over_factor)
-                wcsv.writerow([thresh, over_factor, start_time])
+                wacsv.writerow([threshold, over_factor, start_time])
 
     print 'total runtime = {0}'.format(time.time() - start)
