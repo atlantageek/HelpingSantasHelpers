@@ -61,7 +61,8 @@ def find_closest_idx(toy_list, target):
             return i
         if (i == end):
             return i
-        if (toy_list[i].duration < target) and (toy_list[i-1].duration >= target):
+        if (toy_list[i].duration <=target) and (toy_list[i-1].duration >= target):
+            print "XXXX"
             return i
         if (toy_list[i].duration > target):
             end = i

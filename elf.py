@@ -10,6 +10,7 @@ class Elf:
         self.next_available_time = 526490  # Santa's Workshop opens Jan 1, 2014 9:00 (= 540 minutes)
         self.rating_increase = 1.02
         self.rating_decrease = 0.90
+        self.rating_target = 4.0
 
     def update_elf(self, hrs, toy, start_minute, duration):
         """ Updates the elf's productivity rating and next available time based on last toy completed.
