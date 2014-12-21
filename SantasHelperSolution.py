@@ -20,9 +20,15 @@ class SantasHelperSolution:
         self.toy_filename    = toy_filename
         self.output_filename = output_filename
 
+        self.base_time = datetime.datetime(2014, 1, 1, 0, 0)
         self.hours = Hours()
         self._init_elves()
         self._init_toys()
+
+    def process(self):
+        self.run()
+        self._open_output_file().close()
+        self._open_output_stats_file().close()
 
     def run(self):
         raise Exception("Not implemented.")
@@ -46,16 +52,14 @@ class SantasHelperSolution:
         gc.collect()
 
     def _open_output_file(self):
-        if hasattr(self, 'ofile') and self.ofile.closed == False:
-            return self.ofile
-        else:
+        if not hasattr(self, 'ofile') or self.ofile.closed == True:
             self.ofile = open(self.output_filename, 'wb')
+        return self.ofile
 
     def _open_output_stats_file(self):
-        if hasattr(self, 'stats_file') and self.stats_file.closed == False:
-            return self.stats_file
-        else:
+        if not hasattr(self, 'stats_file') or self.stats_file.closed == True:
             self.stats_file = open(string.replace(self.output_filename, ".", "_stats."), 'wb')
+        return self.stats_file
 
     def _csv_writer(self):
         if not hasattr(self, 'csv_writer'):
@@ -75,30 +79,53 @@ class SantasHelperSolution:
     def return_elf(self, elf):
         heapq.heappush(self.elves, (elf.next_available_time, elf))
 
-    def record_work(self, elf, toy, duration):
-        start_time = elf.available_time
-
+    def record_work(self, elf, toy):
+        start_time = elf.next_available_time
         productivity = elf.rating
 
-        elf.next_available_time, work_duration = self.assign_elf_to_toy(work_start_time, elf, toy)
-        elf.update_elf(hours, toy, work_start_time, work_duration)
+        elf.next_available_time, work_duration = self.assign_elf_to_toy(start_time, elf, toy)
+        elf.update_elf(self.hours, toy, start_time, work_duration)
 
         self.return_elf(elf)
 
-        tt = ref_time + datetime.timedelta(seconds = 60 * start_time)
+        tt = self.base_time + datetime.timedelta(seconds = 60 * start_time)
         time_string = " ".join([str(tt.year), str(tt.month), str(tt.day), str(tt.hour), str(tt.minute)])
         timestamp = str(tt)
-        self._csv_writer().writerow([toy.id, elf.id, time_string, duration])
-        self._csv_stats_writer().writerow([toy.id, elf.id, timestamp, duration, productivity, toy.duration])
+        self._csv_writer().writerow([toy.id, elf.id, time_string, work_duration])
+        self._csv_stats_writer().writerow([toy.id, elf.id, timestamp, work_duration, productivity, toy.duration])
 
         return timestamp
 
-    def assign_elf_to_toy(work_start_time, elf, toy):
-        start_time = hours.next_sanctioned_minute(input_time)
+    def assign_elf_to_toy(self, work_start_time, elf, toy):
+        start_time = self.hours.next_sanctioned_minute(work_start_time)
         duration = int(math.ceil(toy.duration / elf.rating))
-        sanctioned, unsanctioned = hours.get_sanctioned_breakdown(start_time, duration)
+        sanctioned, unsanctioned = self.hours.get_sanctioned_breakdown(start_time, duration)
 
         if unsanctioned == 0:
-            return hours.next_sanctioned_minute(start_time + duration), duration
+            return self.hours.next_sanctioned_minute(start_time + duration), duration
         else:
-            return hours.apply_resting_period(start_time + duration, unsanctioned), duration
+            return self.hours.apply_resting_period(start_time + duration, unsanctioned), duration
+
+    def closest_toy_with_duration(self, duration):
+        idx = self._binary_search_toys(duration)
+        return self.toys.pop(idx)
+
+    def _binary_search_toys(self, duration):
+        start = 0
+        end = len(self.toys)
+
+        if (self.toys[0].duration > duration):
+            return 0
+
+        while True:
+            if start >= end - 1:
+                return start
+
+            idx = int(math.floor((end - start) / 2.0)) + start
+
+            if self.toys[idx].duration < duration:
+                start = idx
+            elif self.toys[idx].duration > duration:
+                end = idx
+            else:
+                return idx

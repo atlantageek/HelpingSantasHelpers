@@ -1,3 +1,4 @@
+import sys
 from SantasHelperSolution import *
 
 class SantasHelperSolutionNaive(SantasHelperSolution):
@@ -9,5 +10,14 @@ class SantasHelperSolutionNaive(SantasHelperSolution):
                 toy = self.toys.pop()
             else:
                 time_left = self.hours.get_sanctioned_time_left(start_time)
-                toy_idx = find_closest_idx(elf.rating * time_left * 1.15)
-                toy = self.toys.pop(toy_idx)
+                toy = self.closest_toy_with_duration(elf.rating * time_left * 1.15)
+
+            self.record_work(elf, toy)
+
+
+input_file = sys.argv[1]
+output_file = sys.argv[2]
+num_elves = int(sys.argv[3])
+
+naive = SantasHelperSolutionNaive(input_file, output_file, num_elves)
+naive.process()
