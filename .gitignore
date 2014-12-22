@@ -1,3 +1,5 @@
 *.csv
 *.pyc
 *.bz2
+results/
+data/
