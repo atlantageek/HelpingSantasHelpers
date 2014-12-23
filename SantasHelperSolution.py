@@ -35,9 +35,11 @@ class SantasHelperSolution:
 
     def _init_elves(self):
         self.elves = []
+        self._elves = []
         for i in xrange(self.total_elves):
             elf = Elf(i + 1)
             heapq.heappush(self.elves, (elf.next_available_time, elf))
+            self._elves.append(elf)
 
     def _init_toys(self):
         _toys = []
@@ -94,7 +96,7 @@ class SantasHelperSolution:
         self._csv_writer().writerow([toy.id, elf.id, time_string, work_duration])
         self._csv_stats_writer().writerow([toy.id, elf.id, timestamp, work_duration, productivity, toy.duration])
 
-        return timestamp
+        return timestamp, tt + datetime.timedelta(seconds = 60 * work_duration)
 
     def assign_elf_to_toy(self, work_start_time, elf, toy):
         start_time = self.hours.next_sanctioned_minute(work_start_time)
@@ -129,3 +131,10 @@ class SantasHelperSolution:
                 end = idx
             else:
                 return idx
+
+    def average_productivity(self):
+        total_rating = sum((elf.rating for elf in self._elves))
+        return total_rating / float(len(self._elves))
+
+    def work_remaining(self):
+        return sum((toy.duration for toy in self.toys))

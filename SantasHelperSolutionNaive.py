@@ -14,6 +14,8 @@ class SantasHelperSolutionNaive(SantasHelperSolution):
 
             self.record_work(elf, toy)
 
+            if len(self.toys) % 1000 == 0:
+                print "Average productivity: %0.4f | Work remaining: %0.4f" % (self.average_productivity(), self.work_remaining())
 
 input_file = sys.argv[1]
 output_file = sys.argv[2]
