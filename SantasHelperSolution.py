@@ -36,8 +36,11 @@ class SantasHelperSolution:
     def _init_elves(self):
         self.elves = []
         self._elves = []
+        self.elves_by_id = [None] * (self.total_elves + 1)
+        self.elves_by_id[0] = {}
         for i in xrange(self.total_elves):
             elf = Elf(i + 1)
+            self.elves_by_id[i + 1] = elf
             heapq.heappush(self.elves, (elf.next_available_time, elf))
             self._elves.append(elf)
 
@@ -98,6 +101,7 @@ class SantasHelperSolution:
 
         return timestamp, tt + datetime.timedelta(seconds = 60 * work_duration)
 
+
     def assign_elf_to_toy(self, work_start_time, elf, toy):
         start_time = self.hours.next_sanctioned_minute(work_start_time)
         duration = int(math.ceil(toy.duration / elf.rating))
@@ -111,6 +115,10 @@ class SantasHelperSolution:
     def closest_toy_with_duration(self, duration):
         idx = self._binary_search_toys(duration)
         return self.toys.pop(idx)
+
+    def closest_toy_with_duration_idx(self, duration):
+        idx = self._binary_search_toys(duration)
+        return idx
 
     def _binary_search_toys(self, duration):
         start = 0
@@ -138,3 +146,16 @@ class SantasHelperSolution:
 
     def work_remaining(self):
         return sum((toy.duration for toy in self.toys))
+
+    def _search_toys_id(self, target_id):
+        idx = 0
+        end = len(self.toys)
+        print end 
+        while idx < len(self.toys):
+           id =  self.toys[idx].id
+           if self.toys[idx].id == target_id:
+               print idx
+               return idx
+           idx += 1
+        print 'Fail'
+        return -1
