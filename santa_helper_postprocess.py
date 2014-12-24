@@ -24,7 +24,8 @@ class SantasHelperSolutionNaive(SantasHelperSolution):
                 print 'Elf {0} eff {1} toy {2} duration {3} SMALL TOY[{4}]'.format(elf.id, elf.rating, toy.id, toy.duration, len(self.toys))
                 size=1
             productivity = elf.rating
-            self.record_work(elf, toy)
+            elf, last_work_started, last_work_ended = self.record_work(elf, toy)
+            self.return_elf(elf)
             solution.append({'elf_id':elf.id, 'toy_id':toy.id,'size':size, 'productivity': productivity, 'duration': toy.duration})
 
 class SantasOrderedSolutionNaive(SantasHelperSolution):
@@ -39,7 +40,8 @@ class SantasOrderedSolutionNaive(SantasHelperSolution):
             toy = self.toys.pop(toy_idx)
             print 'toy {0} duration {1}'.format(toy.id, toy.duration)
 
-            self.record_work(elf, toy)
+            elf, last_work_started, last_work_ended = self.record_work(elf, toy)
+            self.return_elf(elf)
 
 
 def reorder_solution():
