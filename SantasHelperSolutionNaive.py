@@ -12,7 +12,8 @@ class SantasHelperSolutionNaive(SantasHelperSolution):
                 time_left = self.hours.get_sanctioned_time_left(start_time)
                 toy = self.closest_toy_with_duration(elf.rating * time_left * 1.15)
 
-            self.record_work(elf, toy)
+            elf, last_work_started, last_work_ended = self.record_work(elf, toy)
+            self.return_elf(elf)
 
             if len(self.toys) % 1000 == 0:
                 print "Average productivity: %0.4f | Work remaining: %0.4f" % (self.average_productivity(), self.work_remaining())

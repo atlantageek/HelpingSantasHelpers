@@ -91,15 +91,13 @@ class SantasHelperSolution:
         elf.next_available_time, work_duration = self.assign_elf_to_toy(start_time, elf, toy)
         elf.update_elf(self.hours, toy, start_time, work_duration)
 
-        self.return_elf(elf)
-
         tt = self.base_time + datetime.timedelta(seconds = 60 * start_time)
         time_string = " ".join([str(tt.year), str(tt.month), str(tt.day), str(tt.hour), str(tt.minute)])
         timestamp = str(tt)
         self._csv_writer().writerow([toy.id, elf.id, time_string, work_duration])
         self._csv_stats_writer().writerow([toy.id, elf.id, timestamp, work_duration, productivity, toy.duration])
 
-        return timestamp, tt + datetime.timedelta(seconds = 60 * work_duration)
+        return elf, timestamp, tt + datetime.timedelta(seconds = 60 * work_duration)
 
 
     def assign_elf_to_toy(self, work_start_time, elf, toy):

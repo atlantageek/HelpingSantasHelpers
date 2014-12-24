@@ -53,7 +53,8 @@ class SantasHelperSolutionGenetic(SantasHelperSolution):
 
         for toy in self._gene:
             start_time, elf = self.next_available_elf()
-            self.last_work_started, self.last_work_ended = self.record_work(elf, toy)
+            elf, self.last_work_started, self.last_work_ended = self.record_work(elf, toy)
+            self.return_elf(elf)
 
     def fitness(self):
         return int((self.last_work_ended - self.base_time).total_seconds())
@@ -71,6 +72,19 @@ class SantasHelperSolutionGenetic(SantasHelperSolution):
                 g2 = g2[0:point] + g1[point:len(self._gene)]
         child1 = SantasHelperSolutionGenetic(self.toy_filename, self.output_filename, self.total_elves)
         child2 = SantasHelperSolutionGenetic(self.toy_filename, self.output_filename, self.total_elves)
+
+        for m in xrange(random.randint(50, 500)):
+            mutation_point1 = random.randint(0, len(g1))
+            mutation_point2 = random.randint(0, len(g1))
+            old = g1[mutation_point1]
+            g1[mutation_point1] = g1[mutation_point2]
+            g1[mutation_point2] = old
+
+            mutation_point1 = random.randint(0, len(g2))
+            mutation_point2 = random.randint(0, len(g2))
+            old = g2[mutation_point1]
+            g2[mutation_point1] = g2[mutation_point2]
+            g2[mutation_point2] = old
 
         child1.init_gene(self.generation, self.generation.next_gene_id(), g1)
         child2.init_gene(self.generation, self.generation.next_gene_id(), g2)
