@@ -55,6 +55,7 @@ def reorder_solution():
                       temp = solution[idx2]
                       solution[idx] = solution[idx2]
                       solution[idx2] = temp
+                      print 'Fixed productivity {0} < {1} duration {2} < {3}'.format(solution[idx]['productivity'], solution[idx2]['productivity'], solution[idx]['duration'], solution[idx2]['duration'])
                       print 'swap1'
                if solution[idx]['productivity'] < solution[idx2]['productivity']:
                    if solution[idx]['duration'] > solution[idx2]['duration']:
@@ -62,6 +63,7 @@ def reorder_solution():
                       temp = solution[idx2]
                       solution[idx] = solution[idx2]
                       solution[idx2] = temp
+                      print 'Fixed productivity {0} > {1} duration {2}> {3}'.format(solution[idx]['productivity'], solution[idx2]['productivity'], solution[idx]['duration'], solution[idx2]['duration'])
                       print 'swap2'
 
 
@@ -72,5 +74,5 @@ num_elves = int(sys.argv[3])
 naive = SantasHelperSolutionNaive(input_file, output_file, num_elves)
 naive.process()
 reorder_solution()
-post_process = SantasOrderedSolutionNaive(input_file, 'step2_' + output_file, num_elves)
-post_process.process()
+#post_process = SantasOrderedSolutionNaive(input_file, 'step2_' + output_file, num_elves)
+#post_process.process()
