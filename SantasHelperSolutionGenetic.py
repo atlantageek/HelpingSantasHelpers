@@ -17,7 +17,7 @@ class SantasHelperSolutionGeneration:
 
             for i in xrange(len(self.genes)):
                 self.genes[i].process()
-                print "... [%d] processed gene %d/%d with fitness: %d" % (x + 1, i, self.population_size, self.genes[i].fitness())
+                print "... [%d] processed gene %d/%d with fitness: %d" % (x + 1, i + 1, self.population_size, self.genes[i].fitness())
 
             self.genes = sorted(self.genes, key = lambda g: g.fitness())
 
@@ -72,8 +72,8 @@ class SantasHelperSolutionGenetic(SantasHelperSolution):
         child1 = SantasHelperSolutionGenetic(self.toy_filename, self.output_filename, self.total_elves)
         child2 = SantasHelperSolutionGenetic(self.toy_filename, self.output_filename, self.total_elves)
 
-        child1.init_gene(self.generation.next_gene_id(), g1)
-        child2.init_gene(self.generation.next_gene_id(), g2)
+        child1.init_gene(self.generation, self.generation.next_gene_id(), g1)
+        child2.init_gene(self.generation, self.generation.next_gene_id(), g2)
 
         return child1, child2
 
