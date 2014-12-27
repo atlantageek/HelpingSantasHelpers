@@ -81,6 +81,14 @@ class SantasHelperSolution:
     def next_available_elf(self):
         return heapq.heappop(self.elves)
 
+    def get_elf_productivity_position(self,elf):
+        productivity_target = elf.rating
+        i=0
+        for target_elf in self._elves:
+            if productivity_target < target_elf.rating:
+                i += 1
+        return i
+
     def return_elf(self, elf):
         heapq.heappush(self.elves, (elf.next_available_time, elf))
 
@@ -96,6 +104,7 @@ class SantasHelperSolution:
         timestamp = str(tt)
         self._csv_writer().writerow([toy.id, elf.id, time_string, work_duration])
         self._csv_stats_writer().writerow([toy.id, elf.id, timestamp, work_duration, productivity, toy.duration])
+        
 
         return elf, timestamp, tt + datetime.timedelta(seconds = 60 * work_duration)
 
