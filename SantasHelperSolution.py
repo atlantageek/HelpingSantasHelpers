@@ -108,6 +108,20 @@ class SantasHelperSolution:
 
         return elf, timestamp, tt + datetime.timedelta(seconds = 60 * work_duration)
 
+    def record_work_starting_later_than(self, elf, toy, start_time):
+        start_time = max(elf.next_available_time, start_time)
+        productivity = elf.rating
+
+        elf.next_available_time, work_duration = self.assign_elf_to_toy(start_time, elf, toy)
+        elf.update_elf(self.hours, toy, start_time, work_duration)
+
+        tt = self.base_time + datetime.timedelta(seconds = 60 * start_time)
+        time_string = " ".join([str(tt.year), str(tt.month), str(tt.day), str(tt.hour), str(tt.minute)])
+        timestamp = str(tt)
+        self._csv_writer().writerow([toy.id, elf.id, time_string, work_duration])
+        self._csv_stats_writer().writerow([toy.id, elf.id, timestamp, work_duration, productivity, toy.duration])
+
+        return elf, timestamp, tt + datetime.timedelta(seconds = 60 * work_duration)
 
     def assign_elf_to_toy(self, work_start_time, elf, toy):
         start_time = self.hours.next_sanctioned_minute(work_start_time)
@@ -157,7 +171,7 @@ class SantasHelperSolution:
     def _search_toys_id(self, target_id):
         idx = 0
         end = len(self.toys)
-        print end 
+        print end
         while idx < len(self.toys):
            id =  self.toys[idx].id
            if self.toys[idx].id == target_id:
