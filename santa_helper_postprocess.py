@@ -10,6 +10,11 @@ class SantasHelperSolutionNaive(SantasHelperSolution):
             time_left = self.hours.get_sanctioned_time_left(start_time)
             toy_idx = self.closest_toy_with_duration_idx(elf.rating * time_left * 1.01)
             size = 1
+            if self.toys[len(self.toys) - 1].duration > 18000:
+                target_rating = 0.4
+            else:
+                target_rating = 0.30
+
             if elf.rating > target_rating:
                 if self.toys[toy_idx].duration < 240:
                     #Small optimization.  Look at all the leves that are about to finish and find where this elf's productivity is compared to the others.
