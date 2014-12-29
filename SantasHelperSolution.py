@@ -75,7 +75,7 @@ class SantasHelperSolution:
     def _csv_stats_writer(self):
         if not hasattr(self, 'csv_stats_writer'):
             self.csv_stats_writer = csv.writer(self._open_output_stats_file())
-            self.csv_stats_writer.writerow(['ToyId', 'ElfId', 'StartTime', 'Duration', 'ElfProductivity', 'ToyDuration'])
+            self.csv_stats_writer.writerow(['ToyId', 'ElfId', 'StartTime', 'Duration', 'ElfProductivity', 'ToyDuration', 'Median'])
         return self.csv_stats_writer
 
     def next_available_elf(self):
@@ -103,7 +103,12 @@ class SantasHelperSolution:
         time_string = " ".join([str(tt.year), str(tt.month), str(tt.day), str(tt.hour), str(tt.minute)])
         timestamp = str(tt)
         self._csv_writer().writerow([toy.id, elf.id, time_string, work_duration])
-        self._csv_stats_writer().writerow([toy.id, elf.id, timestamp, work_duration, productivity, toy.duration])
+
+        if 0 == len(self.toys):
+           center = 0
+        else:
+           center = self.toys[len(self.toys)/2].duration
+        self._csv_stats_writer().writerow([toy.id, elf.id, timestamp, work_duration, productivity, toy.duration, center])
         
 
         return elf, timestamp, tt + datetime.timedelta(seconds = 60 * work_duration)
