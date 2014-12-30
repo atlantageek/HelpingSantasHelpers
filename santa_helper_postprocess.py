@@ -1,6 +1,7 @@
 import sys
 from SantasHelperSolution import *
 solution = []
+#The leftovers are at 402 - 9404
 class SantasHelperSolutionNaive(SantasHelperSolution):
     def run(self):
         target_rating = 0.40
