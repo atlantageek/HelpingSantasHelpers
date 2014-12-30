@@ -1,7 +1,7 @@
 import sys
 from SantasHelperSolution import *
 solution = []
-#The leftovers are at 402 - 9404
+#The leftovers are at 402 - 9404 Year 2385
 class SantasHelperSolutionNaive(SantasHelperSolution):
     def run(self):
         target_rating = 0.40
@@ -27,6 +27,7 @@ class SantasHelperSolutionNaive(SantasHelperSolution):
                     print 'Elf {0} eff {1} toy {2} duration {3} Big TOY[{4}] {5} {6}'.format(elf.id, elf.rating, toy.id, toy.duration, len(self.toys), elf.rating, toy_idx)
                     size=3
                 else:
+                    toy_idx = self.closest_toy_with_duration_idx(elf.rating * time_left * 1.17)
                     toy = self.toys.pop(toy_idx)
                     print 'Elf {0} eff {1} toy {2} duration {3} MEDIUM TOY[{4}]'.format(elf.id, elf.rating, toy.id, toy.duration, len(self.toys))
                     size=2
