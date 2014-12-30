@@ -1,7 +1,7 @@
 import sys
 from SantasHelperSolution import *
 solution = []
-#The leftovers are at 402 - 9404 Year 2385
+#The leftovers are at 2810 - 9410 Year 2397
 class SantasHelperSolutionNaive(SantasHelperSolution):
     def run(self):
         target_rating = 0.40
