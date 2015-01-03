@@ -17,12 +17,17 @@ class SantasHelperSolutionNaive(SantasHelperSolution):
 
             time_left = self.hours.get_sanctioned_time_left(start_time)
             
-            
             toy_idx = self.closest_toy_with_duration_idx(elf.rating * time_left * 1.01)
             toy_idx_exact = self.closest_toy_with_duration_idx(elf.rating * time_left * 1.0)
             
             if (  int(math.ceil(self.toys[toy_idx_exact].duration / elf.rating)) == time_left):
                toy_idx = toy_idx_exact-1
+            
+            if (  int(math.ceil(self.toys[toy_idx].duration / elf.rating)) > elf.rating * time_left*1.2   and (self.toys[toy_idx].duration ) < 5000):
+               if (toy_idx >= 2):
+                  toy_idx = toy_idx-1  # if we are too long for the time slot, cheat downwards
+               
+               
             
             #print(len(self.toys),start_time, elf.rating, time_left)
             

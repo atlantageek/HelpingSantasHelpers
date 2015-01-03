@@ -6,10 +6,10 @@ class SantasHelperSolutionNaive(SantasHelperSolution):
     def get_target(self,biggest):
         if (biggest > 22000):
             return 0.40
-        elif biggest > 7000:
-            return (float(biggest - 8000) / 100000.0) + 0.25
+        elif biggest > 8000:
+            return (float(biggest - 8000) / 100000.0) + 0.26
         else:
-            return 0.25
+            return 0.26
     def run(self):
         target_rating = 0.41
         while len(self.toys) > 0:

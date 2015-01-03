@@ -1,4 +1,3 @@
-
 import math
 import hours as hrs
 
@@ -7,7 +6,7 @@ class Elf:
     def __init__(self, elfid):
         self.id = elfid
         self.rating = 1.0
-        self.next_available_time = 526490  # Santa's Workshop opens Jan 1, 2014 9:00 (= 540 minutes)
+        self.next_available_time = 526140  # Santa's Workshop opens Jan 1, 2014 9:00 (= 540 minutes)
         self.rating_increase = 1.02
         self.rating_decrease = 0.90
 
@@ -35,10 +34,13 @@ class Elf:
         # need to be accounted for.
         end_minute = start_minute + duration
         if unsanctioned == 0:
-            if hrs.is_sanctioned_time(end_minute):
+            if hrs.is_sanctioned_time(end_minute) and hrs.is_sanctioned_time(end_minute+12) :
                 self.next_available_time = end_minute
             else:
-                self.next_available_time = hrs.next_sanctioned_minute(end_minute)
+                if hrs.is_sanctioned_time(end_minute):
+                   self.next_available_time = hrs.next_sanctioned_minute(end_minute+12)
+                else:
+                   self.next_available_time = hrs.next_sanctioned_minute(end_minute)
         else:
             self.next_available_time = hrs.apply_resting_period(end_minute, unsanctioned)
 
