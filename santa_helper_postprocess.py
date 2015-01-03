@@ -17,6 +17,10 @@ class SantasHelperSolutionNaive(SantasHelperSolution):
 
             time_left = self.hours.get_sanctioned_time_left(start_time)
             toy_idx = self.closest_toy_with_duration_idx(elf.rating * time_left * 1.01)
+            toy_idx_exact = self.closest_toy_with_duration_idx(elf.rating * time_left * 1.0)
+            
+            if (  int(math.ceil(self.toys[toy_idx_exact].duration / elf.rating)) == time_left):
+               toy_idx = toy_idx_exact-1
             size = 1
             target_rating = self.get_target(self.toys[len(self.toys) - 1].duration)
 
