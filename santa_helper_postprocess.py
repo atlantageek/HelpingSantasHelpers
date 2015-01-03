@@ -22,7 +22,7 @@ class SantasHelperSolutionNaive(SantasHelperSolution):
 
             if elf.rating > target_rating:
                 #if self.toys[toy_idx].duration <= 240:
-                    if (self.toys[toy_idx + 1].duration/elf.rating) < (time_left * 1.20) and self.toys[toy_idx + 1].duration > (600 * target_rating):
+                    if (self.toys[toy_idx + 1].duration/elf.rating) < (time_left * 1.57) and self.toys[toy_idx + 1].duration > (600 * target_rating):
                         toy_idx = toy_idx + 1
                         toy = self.toys.pop(toy_idx)
                         if elf.id == 1:
