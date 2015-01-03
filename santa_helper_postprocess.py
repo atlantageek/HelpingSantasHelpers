@@ -3,6 +3,13 @@ from SantasHelperSolution import *
 solution = []
 #The leftovers are at 2810 - 9410 Year 2397
 class SantasHelperSolutionNaive(SantasHelperSolution):
+    def get_target(self,biggest):
+        if (biggest > 22000):
+            return 0.40
+        elif biggest > 7000:
+            return (float(biggest - 8000) / 100000.0) + 0.25
+        else:
+            return 0.25
     def run(self):
         target_rating = 0.41
         while len(self.toys) > 0:
@@ -11,14 +18,11 @@ class SantasHelperSolutionNaive(SantasHelperSolution):
             time_left = self.hours.get_sanctioned_time_left(start_time)
             toy_idx = self.closest_toy_with_duration_idx(elf.rating * time_left * 1.01)
             size = 1
-            if self.toys[len(self.toys) - 1].duration > 18000:
-                target_rating = 0.40
-            else:
-                target_rating = 0.31
+            target_rating = self.get_target(self.toys[len(self.toys) - 1].duration)
 
             if elf.rating > target_rating:
                 #if self.toys[toy_idx].duration <= 240:
-                    if (self.toys[toy_idx + 1].duration/elf.rating) < (time_left * 1.18) and self.toys[toy_idx + 1].duration > (600 * target_rating):
+                    if (self.toys[toy_idx + 1].duration/elf.rating) < (time_left * 1.20) and self.toys[toy_idx + 1].duration > (600 * target_rating):
                         toy_idx = toy_idx + 1
                         toy = self.toys.pop(toy_idx)
                         if elf.id == 1:
