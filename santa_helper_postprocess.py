@@ -7,9 +7,9 @@ class SantasHelperSolutionNaive(SantasHelperSolution):
         if (biggest > 22000):
             return 0.40
         elif biggest > 8000:
-            return (float(biggest - 8000) / 100000.0) + 0.26
+            return (float(biggest - 8000) / 100000.0) + 0.25
         else:
-            return 0.26
+            return 0.25
     def run(self):
         target_rating = 0.41
         while len(self.toys) > 0:
@@ -47,9 +47,15 @@ class SantasHelperSolutionNaive(SantasHelperSolution):
                     #print 'Elf {0} eff {1} toy {2} duration {3} MEDIUM TOY[{4}]'.format(elf.id, elf.rating, toy.id, toy.duration, len(self.toys))
                     #size=2
             else:
-                toy = self.toys.pop(toy_idx)
-                if elf.id == 1:
-                    print 'Elf {0} eff {1} toy {2} duration {3} SMALL TOY[{4}]'.format(elf.id, elf.rating, toy.id, toy.duration, len(self.toys))
+                if elf.rating == 0.25 and self.toys[0].duration > 1000:
+                    toy_idx = (idx + 1) * -1
+                    toy = self.toys.pop( toy_idx)
+                    if elf.id == 1:
+                        print 'Elf {0} eff {1} toy {2} duration {3} Biggest TOY[{4}] {5} {6}'.format(elf.id, elf.rating, toy.id, toy.duration, len(self.toys), elf.rating, toy_idx)
+                else:
+                    toy = self.toys.pop(toy_idx)
+                    if elf.id == 1:
+                        print 'Elf {0} eff {1} toy {2} duration {3} SMALL TOY[{4}]'.format(elf.id, elf.rating, toy.id, toy.duration, len(self.toys))
                 size=1
             productivity = elf.rating
             elf, last_work_started, last_work_ended = self.record_work(elf, toy)
