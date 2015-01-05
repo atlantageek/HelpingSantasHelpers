@@ -7,6 +7,7 @@ import heapq
 import time
 import datetime
 import string
+import logging
 
 from hours import Hours
 from toy import Toy
@@ -137,6 +138,38 @@ class SantasHelperSolution:
             return self.hours.next_sanctioned_minute(start_time + duration), duration
         else:
             return self.hours.apply_resting_period(start_time + duration, unsanctioned), duration
+
+    def calc_rating(self, duration, sanctioned_time, current_rating):
+      #Assume duration/current_rating > sanctioned_time
+        work_time = duration/current_rating
+        unsanctioned = work_time - sanctioned_time
+        sanctioned = sanctioned_time
+        future_rating = max(0.25, min(4.0, current_rating * (1.02 ** (sanctioned/60.0)) *
+                              (0.9 ** (unsanctioned/60.0))))
+        return future_rating
+
+
+    def find_best_fit(self, current_rating, time_left, start_idx):
+        last_duration = self.toys[len(self.toys) - 1].duration
+        previous_time_change = 0
+        #logging.info("Searching .... {0}".format(start_idx)) 
+        best_idx= -1
+        best_rating = 1000000000
+        for idx in range( start_idx,len(self.toys)-1):
+            trial_duration = self.toys[idx].duration
+            future_rating1 = self.calc_rating(trial_duration, time_left , current_rating)
+            future_rating2 = self.calc_rating(last_duration, time_left , current_rating)
+            time_change = trial_duration / current_rating + last_duration /future_rating1 - last_duration/current_rating - trial_duration/future_rating2
+            if time_change < best_rating:
+                #logging.info("{0} Found {1} {3} -> {2} {4}".format(  start_idx, idx - 1, idx, previous_time_change, time_change))
+                best_rating = time_change
+                best_idx = idx
+                #logging.info( "{0} {1} {2}".format(best_rating, time_change, best_idx))
+                #logging.info("{0} Found {1} {2} ".format(  start_idx, idx ,  time_change))
+            previous_time_change = time_change
+        #logging.info(best_idx) 
+        #logging.info("===========")
+        return best_idx
 
     def closest_toy_with_duration(self, duration):
         idx = self._binary_search_toys(duration)

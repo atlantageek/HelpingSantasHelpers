@@ -16,27 +16,13 @@ class SantasHelperSolutionNaive(SantasHelperSolution):
             start_time, elf = self.next_available_elf()
 
             time_left = self.hours.get_sanctioned_time_left(start_time)
-            
             toy_idx = self.closest_toy_with_duration_idx(elf.rating * time_left * 1.01)
             toy_idx_exact = self.closest_toy_with_duration_idx(elf.rating * time_left * 1.0)
-            
             if (  int(math.ceil(self.toys[toy_idx_exact].duration / elf.rating)) == time_left):
                toy_idx = toy_idx_exact-1
-            
             if (  int(math.ceil(self.toys[toy_idx].duration / elf.rating)) > elf.rating * time_left*1.2   and (self.toys[toy_idx].duration ) < 5000):
                if (toy_idx >= 2):
                   toy_idx = toy_idx-1  # if we are too long for the time slot, cheat downwards
-               
-               
-            
-            #print(len(self.toys),start_time, elf.rating, time_left)
-            
-            #print int(math.ceil(self.toys[toy_idx_exact].duration / elf.rating)), time_left
-            
-            #if (len(self.toys) == 11111):
-            #   sys.exit(0)
-            
-            
             size = 1
             if self.toys[len(self.toys) - 1].duration > 18000:
                 target_rating = 0.40
@@ -47,10 +33,8 @@ class SantasHelperSolutionNaive(SantasHelperSolution):
             target_rating = self.get_target(self.toys[len(self.toys) - 1].duration)
 
             if elf.rating > target_rating:
-                
-                    print elf.rating, target_rating, self.toys[toy_idx + 1].duration, time_left * 1.20, 600 * target_rating
-                
-                #if self.toys[toy_idx].duration <= 240:
+                    #Find a better fit alternative for the toy.
+
                     if (self.toys[toy_idx + 1].duration/elf.rating) < (time_left * 1.57) and self.toys[toy_idx + 1].duration > (600 * target_rating):
                         toy_idx = toy_idx + 1
                         toy = self.toys.pop(toy_idx)
@@ -66,11 +50,6 @@ class SantasHelperSolutionNaive(SantasHelperSolution):
                         if elf.id == 1:
                             print 'Elf {0} eff {1} toy {2} duration {3} Big TOY[{4}] {5} {6}'.format(elf.id, elf.rating, toy.id, toy.duration, len(self.toys), elf.rating, toy_idx)
                         size=3
-                #else:
-                    #toy_idx = self.closest_toy_with_duration_idx(elf.rating * time_left * 1.01)
-                    #toy = self.toys.pop(toy_idx)
-                    #print 'Elf {0} eff {1} toy {2} duration {3} MEDIUM TOY[{4}]'.format(elf.id, elf.rating, toy.id, toy.duration, len(self.toys))
-                    #size=2
             else:
                 toy = self.toys.pop(toy_idx)
                 if elf.id == 1:
