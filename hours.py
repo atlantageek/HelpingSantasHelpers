@@ -68,6 +68,10 @@ class Hours:
         num_days = minute / self.minutes_in_24h
         return self.day_start + (num_days + 1) * self.minutes_in_24h
 
+    def next_morning(self, minute):
+        num_days = minute / self.minutes_in_24h
+        return self.day_start + (num_days + 1) * self.minutes_in_24h
+
     def apply_resting_period(self, start, num_unsanctioned):
         """ Enforces the rest period and returns the minute when the elf is next available for work.
         Rest period is applied during sanctioned hours, so 5 hours rest period requires 5 hours sanctioned.

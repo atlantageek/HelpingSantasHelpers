@@ -9,10 +9,12 @@ class SantasHelperSolutionNaive(SantasHelperSolution):
     def get_target(self,biggest):
         if (biggest > 20000):
             return 0.39
+        elif biggest > 15000:
+            return (float(biggest - 5000) / 130000.0) + 0.25
         elif biggest > 5000:
-            return (float(biggest - 5000) / 100000.0) + 0.25
+            return (float(biggest - 5000) / 200000.0) + 0.25
         else:
-            return 0.25
+            return 0.26
     def run(self):
         target_rating = 0.41
         while len(self.toys) > 0:
@@ -32,12 +34,6 @@ class SantasHelperSolutionNaive(SantasHelperSolution):
             
             
             size = 1
-            if self.toys[len(self.toys) - 1].duration > 18000:
-                target_rating = 0.40
-            elif self.toys[len(self.toys) - 1].duration > 13000:
-                target_rating = 0.32
-            else:
-                target_rating = 0.27
             target_rating = self.get_target(self.toys[len(self.toys) - 1].duration)
 
             if elf.rating > target_rating:
@@ -47,6 +43,11 @@ class SantasHelperSolutionNaive(SantasHelperSolution):
                     toy = self.toys.pop(toy_idx)
                     if elf.id == 1:
                         logging.info('Elf {0} eff {1} toy {2} duration {3} MEDIUM2 TOY[{4}]'.format(elf.id, elf.rating, toy.id, toy.duration, len(self.toys)))
+                elif (time_left < 60):
+                     start_time = self.send_home_elf(elf)
+                     if elf.id == 1:
+                         logging.info('Elf {0} is going home early'.format(elf.id))
+                     toy = None
                 else:
                     #Small optimization.  Look at all the leves that are about to finish and find where this elf's productivity is compared to the others.
                     #If its the 4th (for example) most productive elf then get the 4th biggest toy leaving the bigger toys to the other elves.
@@ -58,14 +59,17 @@ class SantasHelperSolutionNaive(SantasHelperSolution):
                        logging.info('Elf {0} eff {1} toy {2} duration {3} Big TOY[{4}] {5} {6}'.format(elf.id, elf.rating, toy.id, toy.duration, len(self.toys), elf.rating, toy_idx))
                     size=3
             else:
+                #if (elf.rating == 0.25 and self.toys[0].duration  > 69):
+                #    toy_idx = len(self.toys) - 1
                 toy = self.toys.pop(toy_idx)
                 if elf.id == 1:
                     logging.info('Elf {0} eff {1} toy {2} duration {3} SMALL TOY[{4}]'.format(elf.id, elf.rating, toy.id, toy.duration, len(self.toys)))
                 size=1
-            productivity = elf.rating
-            elf, last_work_started, last_work_ended = self.record_work(elf, toy)
+            if (toy != None):
+                productivity = elf.rating
+                elf, last_work_started, last_work_ended = self.record_work(elf, toy)
+                solution.append({'elf_id':elf.id, 'toy_id':toy.id,'size':size, 'productivity': productivity, 'duration': toy.duration})
             self.return_elf(elf)
-            solution.append({'elf_id':elf.id, 'toy_id':toy.id,'size':size, 'productivity': productivity, 'duration': toy.duration})
 
 class SantasOrderedSolutionNaive(SantasHelperSolution):
     def run(self):

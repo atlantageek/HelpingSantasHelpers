@@ -58,3 +58,7 @@ class Elf:
         self.rating = max(0.25,
                           min(4.0, self.rating * (self.rating_increase ** (sanctioned/60.0)) *
                               (self.rating_decrease ** (unsanctioned/60.0))))
+
+    def go_home_early(self, hours):
+       self.next_available_time = hours.next_morning(self.next_available_time )
+

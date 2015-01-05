@@ -92,6 +92,9 @@ class SantasHelperSolution:
     def return_elf(self, elf):
         heapq.heappush(self.elves, (elf.next_available_time, elf))
 
+    def send_home_elf(self, elf):
+        elf.go_home_early(self.hours);
+
     def record_work(self, elf, toy):
         start_time = elf.next_available_time
         productivity = elf.rating
