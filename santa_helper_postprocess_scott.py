@@ -1767,7 +1767,7 @@ class SantasHelperSolutionNaive(SantasHelperSolution):
                         if elf.id == 1:
                             print 'Elf {0} eff {1} toy {2} duration {3} Big TOY[{4}] {5} {6}'.format(elf.id, elf.rating, toy.id, toy.duration, len(self.toys), elf.rating, toy_idx)
                         size=3
-            elif self.toys.duration[int(len(self.toys)/2)] > 400:
+            elif self.toys[int(len(self.toys)/2)].duration > 400:
                 toy = self.toys.pop(-1)
                 if elf.id == 1:
                     print 'Elf {0} eff {1} toy {2} duration {3} Big TOY[{4}] for balance'.format(elf.id, elf.rating, toy.id, toy.duration, len(self.toys))
